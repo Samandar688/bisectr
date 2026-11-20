@@ -100,9 +100,7 @@ def run_git_bisect(repo: Path) -> tuple[float, int, str]:
     out = run.stdout + run.stderr
     first = next((line.split()[0] for line in out.splitlines() if "is the first bad commit" in line), None)
     if first is None:
-        raise RuntimeError(f"git bisect gave no answer.
-start: {started.stdout}{started.stderr}
-"
+        raise RuntimeError(f"git bisect gave no answer. start: {started.stdout}{started.stderr} "
                            f"run: {out[-1500:]}")
     return took, out.count("running "), first
 
