@@ -10,8 +10,8 @@ step.
 
 ## Roadmap
 
-- [ ] 1. Demo repo generator (thousands of commits in a second, one hidden bug, untestable commits, merges)
-- [ ] 2. Core: commit graph + binary search with good / bad / skip
+- [x] 1. Demo repo generator (thousands of commits in a second, one hidden bug, untestable commits, merges)
+- [x] 2. Core: commit graph + binary search with good / bad / skip (1,000 commits: 10 tests, 10,000: 13 tests; same answer as `git bisect`)
 - [ ] 3. CLI: `bisectr run --good v1 --bad HEAD -- python check.py`
 - [ ] 4. API + web page (commit timeline, steps animated)
 - [ ] 5. Benchmarks vs testing every commit
