@@ -111,8 +111,12 @@ def best_split(alive: list[int], masks: list[int], suspects: int, testable: int)
     return best
 
 
-def bisect(g: Graph, test: Callable[[str], str], bad: str | None = None) -> Result:
-    """Find the first bad commit. `test(sha)` answers good, bad or skip."""
+def bisect(g: Graph, test: Callable[[str], str], bad: str | None = None,
+           on_step: Callable[[Step], None] | None = None) -> Result:
+    """Find the first bad commit. `test(sha)` answers good, bad or skip.
+
+    on_step is called after every test (the CLI prints progress with it).
+    """
     if not len(g):
         raise ValueError("no suspects: the bad commit is an ancestor of a good one")
     masks = ancestor_masks(g)
@@ -140,6 +144,8 @@ def bisect(g: Graph, test: Callable[[str], str], bad: str | None = None) -> Resu
         else:
             raise ValueError(f"test must answer good, bad or skip, got {verdict!r}")
         steps.append(Step(g.shas[pick], g.subjects[pick], verdict, before, suspects.bit_count(), took))
+        if on_step:
+            on_step(steps[-1])
 
     left = [g.shas[i] for i in range(len(g)) if suspects >> i & 1]
     first_bad = g.shas[bad_i] if len(left) == 1 else None
@@ -164,6 +170,9 @@ class GitRunner:
         self.repo = str(repo)
         self.command = command
         self.timeout = timeout
+        # Checkouts use --force: refuse to run if that would throw away the user's work.
+        if self._git("status", "--porcelain", "--untracked-files=no"):
+            raise RuntimeError("the repo has uncommitted changes: commit or stash them first")
         self.start = self._git("rev-parse", "--abbrev-ref", "HEAD")  # to go back at the end
         if self.start == "HEAD":  # detached: remember the sha instead
             self.start = self._git("rev-parse", "HEAD")
@@ -189,12 +198,13 @@ class GitRunner:
 
 
 def bisect_repo(repo: str | Path, bad: str, goods: list[str], command: list[str],
-                timeout: float | None = None) -> Result:
+                timeout: float | None = None, on_step: Callable[[Step], None] | None = None,
+                graph: Graph | None = None) -> Result:
     """Load the graph, run the search with real checkouts, and put the repo back."""
-    g = load_graph(repo, bad, goods)
+    g = graph or load_graph(repo, bad, goods)
     runner = GitRunner(repo, command, timeout)
     try:
-        bad_sha = runner._git("rev-parse", bad)
-        return bisect(g, runner, bad=bad_sha)
+        bad_sha = runner._git("rev-parse", f"{bad}^{{commit}}")
+        return bisect(g, runner, bad=bad_sha, on_step=on_step)
     finally:
         runner.restore()
