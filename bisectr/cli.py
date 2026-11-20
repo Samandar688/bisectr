@@ -148,9 +148,15 @@ def cmd_demo(args) -> int:
 
 def main(argv: list[str] | None = None) -> int:
     argv = sys.argv[1:] if argv is None else argv
+    if argv[:1] == ["web"]:  # the web server has its own options (see bisectr/web.py)
+        from bisectr.web import main as web_main
+
+        web_main(argv[1:])
+        return 0
     argv, command = split_command(argv)
 
-    p = argparse.ArgumentParser(prog="bisectr", description="Find the commit that broke your code.")
+    p = argparse.ArgumentParser(prog="bisectr", description="Find the commit that broke your code.",
+                                epilog="bisectr web --repo demo/shop   serves the page (see bisectr web -h)")
     sub = p.add_subparsers(dest="cmd", required=True)
 
     run = sub.add_parser("run", help="search for the first bad commit",

@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>bisectr</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>bisectr</h1>
+    <span class="sub">find the commit that broke the code, by binary search</span>
+    <span id="repo" class="pill">loading…</span>
+  </header>
+
+  <main>
+    <section class="card">
+      <div class="row between wrap">
+        <h2>History</h2>
+        <div class="row wrap">
+          <button id="play" type="button" class="primary">Play</button>
+          <button id="step" type="button">Step</button>
+          <button id="reset" type="button">Reset</button>
+          <label class="inline">Speed
+            <select id="speed"><option value="1400">Slow</option><option value="700" selected>Normal</option><option value="250">Fast</option></select>
+          </label>
+        </div>
+      </div>
+      <p class="hint">Oldest commit on the left, newest on the right. Top line = <b>main</b>, bottom = feature branches merged back.
+        The shaded band holds the <b>suspects</b>. <b>Click any commit to hide the bug there</b> and search again.</p>
+      <svg id="timeline" viewBox="0 0 1000 170" role="img" aria-label="Commit timeline with bisect steps"></svg>
+      <div id="tip" class="tip" hidden></div>
+      <p id="now" class="now">&nbsp;</p>
+      <div class="legend">
+        <span><i class="sw good"></i>good (test passed)</span>
+        <span><i class="sw bad"></i>bad (test failed)</span>
+        <span><i class="sw skip"></i>skip (cannot test)</span>
+        <span><i class="sw sus"></i>suspects</span>
+      </div>
+    </section>
+
+    <section class="grid2">
+      <div class="card">
+        <h2>Tests needed</h2>
+        <div class="score">
+          <div class="score-row"><span>bisectr</span><div class="bar-track"><div id="bar-b" class="bar b"></div></div><b id="num-b">–</b></div>
+          <div class="score-row"><span>one by one</span><div class="bar-track"><div id="bar-l" class="bar l"></div></div><b id="num-l">–</b></div>
+        </div>
+        <p id="score-note" class="hint"></p>
+      </div>
+      <div class="card">
+        <h2>Steps</h2>
+        <p class="hint">Each test appears here as it runs.</p>
+        <ol id="steps" class="steps"></ol>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2 id="culprit-title">The culprit</h2>
+      <pre id="culprit" class="culprit">Press Play.</pre>
+    </section>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

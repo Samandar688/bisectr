@@ -13,7 +13,7 @@ step.
 - [x] 1. Demo repo generator (thousands of commits in a second, one hidden bug, untestable commits, merges)
 - [x] 2. Core: commit graph + binary search with good / bad / skip (1,000 commits: 10 tests, 10,000: 13 tests; same answer as `git bisect`)
 - [x] 3. CLI: `bisectr run --good v1 --bad HEAD -- python check.py`
-- [ ] 4. API + web page (commit timeline, steps animated)
+- [x] 4. API + web page (commit timeline, steps animated with zoom, click a commit to hide the bug there)
 - [ ] 5. Benchmarks vs testing every commit
 - [ ] 6. Docker, CI, deploy, README
 
@@ -45,6 +45,22 @@ The test command decides, like `git bisect run`: exit 0 = good, 125 = cannot tes
 
 `--json` prints the steps as JSON. bisectr refuses to run on a repo with uncommitted
 changes (it checks out other commits) and puts the repo back where it was at the end.
+
+### Web page
+
+```bash
+bisectr web --repo demo/shop --port 8000     # builds the demo repo if missing; open http://127.0.0.1:8000
+```
+
+- **History:** every commit on a timeline (main on top, feature branches below). Play the
+  search: each test is marked good / bad / skip, the suspects band shrinks and the view
+  zooms in on it.
+- **Click any commit** to hide the bug there instead and watch the search find it, even
+  inside a merged feature branch.
+- **Tests needed:** bisectr vs testing one by one, and the culprit's diff.
+
+The page answers good / bad from the commit graph (a commit is bad if the bug commit is one
+of its ancestors), which is what `check.py` answers; the CLI runs the real test.
 
 ## Run (dev)
 
