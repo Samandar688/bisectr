@@ -90,14 +90,20 @@ def run_git_bisect(repo: Path) -> tuple[float, int, str]:
     def git(*args):
         return subprocess.run(["git", "-C", str(repo), *args], capture_output=True, text=True)
 
-    git("bisect", "start", "main", "v1.0")
+    started = git("bisect", "start", "main", "v1.0")
     t = time.perf_counter()
     try:
-        out = git("bisect", "run", *CHECK).stdout
+        run = git("bisect", "run", *CHECK)
     finally:
         took = time.perf_counter() - t
         git("bisect", "reset")
-    first = next(line.split()[0] for line in out.splitlines() if "is the first bad commit" in line)
+    out = run.stdout + run.stderr
+    first = next((line.split()[0] for line in out.splitlines() if "is the first bad commit" in line), None)
+    if first is None:
+        raise RuntimeError(f"git bisect gave no answer.
+start: {started.stdout}{started.stderr}
+"
+                           f"run: {out[-1500:]}")
     return took, out.count("running "), first
 
 

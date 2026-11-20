@@ -174,11 +174,8 @@ def test_same_answer_as_git_bisect(repo):
     def git(*args):
         return subprocess.run(["git", "-C", str(path), *args], capture_output=True, text=True)
 
-    git("bisect", "start", "main", "v1.0")
-    try:
-        out = git("bisect", "run", *CHECK).stdout
-    finally:
-        git("bisect", "reset")
-    line_ = next(x for x in out.splitlines() if "is the first bad commit" in x)
-    assert line_.split()[0] == truth.bug["sha"]
-    assert bisect_repo(path, "main", ["v1.0"], CHECK).first_bad == line_.split()[0]
+    from bisectr.bench import run_git_bisect
+
+    _, _, first = run_git_bisect(path)
+    assert first == truth.bug["sha"]
+    assert bisect_repo(path, "main", ["v1.0"], CHECK).first_bad == first
