@@ -2,6 +2,8 @@
 
 [![tests](https://github.com/Samandar688/bisectr/actions/workflows/tests.yml/badge.svg)](https://github.com/Samandar688/bisectr/actions/workflows/tests.yml)
 
+**Live demo:** https://bisectr.onrender.com (1,000-commit demo repo; free plan, so the first visit after a quiet spell takes ~1 min to wake up)
+
 Your code worked last week. Today it is broken. There are 1,000 commits in between.
 Which one broke it?
 
