@@ -1,0 +1,62 @@
+[
+  {
+    "commits": 10,
+    "positions": 8,
+    "bisect_mean": 3.125,
+    "bisect_max": 4,
+    "linear_mean": 4.625,
+    "real_bisectr_s": 0.6048708000016632,
+    "real_bisectr_tests": 3,
+    "real_git_s": 0.5035371999983909,
+    "real_git_tests": 3,
+    "real_linear_s": 0.6386052000016207,
+    "real_linear_tests": 5,
+    "per_test_s": 0.20162360000055438,
+    "linear_estimate_s": 0.6386052000016207
+  },
+  {
+    "commits": 100,
+    "positions": 98,
+    "bisect_mean": 6.704081632653061,
+    "bisect_max": 7,
+    "linear_mean": 49.83673469387755,
+    "real_bisectr_s": 1.0249850999971386,
+    "real_bisectr_tests": 7,
+    "real_git_s": 0.9600687000056496,
+    "real_git_tests": 6,
+    "real_linear_s": 4.185875399998622,
+    "real_linear_tests": 33,
+    "per_test_s": 0.1464264428567341,
+    "linear_estimate_s": 4.185875399998622
+  },
+  {
+    "commits": 1000,
+    "positions": 300,
+    "bisect_mean": 9.983333333333333,
+    "bisect_max": 10,
+    "linear_mean": 519.2633333333333,
+    "real_bisectr_s": 1.5528154000057839,
+    "real_bisectr_tests": 10,
+    "real_git_s": 1.6846179999993183,
+    "real_git_tests": 10,
+    "real_linear_s": 80.52062429999933,
+    "real_linear_tests": 647,
+    "per_test_s": 0.1552815400005784,
+    "linear_estimate_s": 80.52062429999933
+  },
+  {
+    "commits": 10000,
+    "positions": 300,
+    "bisect_mean": 13.426666666666666,
+    "bisect_max": 16,
+    "linear_mean": 4855.333333333333,
+    "real_bisectr_s": 2.7194568999984767,
+    "real_bisectr_tests": 14,
+    "real_git_s": 2.457483999998658,
+    "real_git_tests": 13,
+    "real_linear_s": null,
+    "real_linear_tests": 7233,
+    "per_test_s": 0.19424692142846262,
+    "linear_estimate_s": 1404.98798269207
+  }
+]

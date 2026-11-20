@@ -14,7 +14,7 @@ step.
 - [x] 2. Core: commit graph + binary search with good / bad / skip (1,000 commits: 10 tests, 10,000: 13 tests; same answer as `git bisect`)
 - [x] 3. CLI: `bisectr run --good v1 --bad HEAD -- python check.py`
 - [x] 4. API + web page (commit timeline, steps animated with zoom, click a commit to hide the bug there)
-- [ ] 5. Benchmarks vs testing every commit
+- [x] 5. Benchmarks vs testing every commit (10,000 commits: 14 tests in 2.7 s vs ~7,000 tests, [results](bench/RESULTS.md))
 - [ ] 6. Docker, CI, deploy, README
 
 ## Use it
@@ -61,6 +61,20 @@ bisectr web --repo demo/shop --port 8000     # builds the demo repo if missing; 
 
 The page answers good / bad from the commit graph (a commit is bad if the bug commit is one
 of its ancestors), which is what `check.py` answers; the CLI runs the real test.
+
+### Benchmarks
+
+Average tests to find the bug, and what that means if one test run takes a minute:
+
+| Commits | bisectr | One by one | With a 1-minute test: bisectr | One by one |
+|---|---|---|---|---|
+| 100 | 6.7 | 50 | 7 min | 50 min |
+| 1,000 | 10.0 | 519 | 10 min | 8.7 h |
+| 10,000 | 13.4 | 4,855 | 13 min | 3.4 days |
+
+![Tests needed](bench/bench_tests.png)
+
+Same answer as `git bisect` at every size. Details: [bench/RESULTS.md](bench/RESULTS.md).
 
 ## Run (dev)
 
