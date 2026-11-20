@@ -1,0 +1,9 @@
+# One-click deploy on Render (render.com -> New -> Blueprint -> pick this repo).
+# The Docker build creates a 1,000-commit demo repo; the page serves it. Render sets $PORT.
+services:
+  - type: web
+    name: bisectr
+    runtime: docker
+    plan: free
+    healthCheckPath: /api/repo
+    autoDeploy: true

@@ -1,5 +1,7 @@
 # bisectr
 
+[![tests](https://github.com/Samandar688/bisectr/actions/workflows/tests.yml/badge.svg)](https://github.com/Samandar688/bisectr/actions/workflows/tests.yml)
+
 Your code worked last week. Today it is broken. There are 1,000 commits in between.
 Which one broke it?
 
@@ -15,7 +17,7 @@ step.
 - [x] 3. CLI: `bisectr run --good v1 --bad HEAD -- python check.py`
 - [x] 4. API + web page (commit timeline, steps animated with zoom, click a commit to hide the bug there)
 - [x] 5. Benchmarks vs testing every commit (10,000 commits: 14 tests in 2.7 s vs ~7,000 tests, [results](bench/RESULTS.md))
-- [ ] 6. Docker, CI, deploy, README
+- [x] 6. Docker, CI, deploy, README
 
 ## Use it
 
@@ -75,6 +77,29 @@ Average tests to find the bug, and what that means if one test run takes a minut
 ![Tests needed](bench/bench_tests.png)
 
 Same answer as `git bisect` at every size. Details: [bench/RESULTS.md](bench/RESULTS.md).
+
+## Run with Docker
+
+```bash
+docker build -t bisectr .          # builds a 1,000-commit demo repo into the image
+docker run -p 8000:8000 bisectr    # open http://127.0.0.1:8000
+```
+
+Deploy: `render.yaml` is a Render blueprint (free plan).
+
+## How it works
+
+| File | What it does |
+|---|---|
+| `bisectr/demo.py` | Writes a demo history with `git fast-import`: one hidden bug, broken builds, merged branches |
+| `bisectr/core.py` | Reads the suspects from git and runs the search; ancestors are Python ints used as bitsets |
+| `bisectr/cli.py` | `bisectr run` / `demo` / `web` |
+| `bisectr/web.py`, `static/` | FastAPI + D3 page: timeline, replay with zoom, click to hide the bug |
+| `bisectr/bench.py` | Benchmarks against `git bisect` and testing one by one |
+
+The search: suspects are the ancestors of the bad commit that no good commit has. Test the
+commit whose ancestors are closest to half of the suspects. Good: drop it and its ancestors.
+Bad: keep only it and its ancestors. Skip: never pick it again. Stop at one commit.
 
 ## Run (dev)
 
