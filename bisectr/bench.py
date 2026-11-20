@@ -21,6 +21,7 @@ Two questions, two kinds of measurement:
 import argparse
 import json
 import random
+import re
 import statistics
 import subprocess
 import sys
@@ -32,6 +33,7 @@ from bisectr.core import BAD, GOOD, SKIP, GitRunner, ancestor_masks, bisect, bis
 from bisectr.demo import generate, load_truth
 
 CHECK = [sys.executable, "-B", "check.py"]
+FIRST_BAD_RE = re.compile(r"^([0-9a-f]{40}) is the first '?bad'? commit", re.MULTILINE)
 
 
 @dataclass
@@ -98,7 +100,9 @@ def run_git_bisect(repo: Path) -> tuple[float, int, str]:
         took = time.perf_counter() - t
         git("bisect", "reset")
     out = run.stdout + run.stderr
-    first = next((line.split()[0] for line in out.splitlines() if "is the first bad commit" in line), None)
+    # Older git: "<sha> is the first bad commit"; newer git quotes the term: "is the first 'bad' commit"
+    found = FIRST_BAD_RE.search(out)
+    first = found.group(1) if found else None
     if first is None:
         raise RuntimeError(f"git bisect gave no answer. start: {started.stdout}{started.stderr} "
                            f"run: {out[-1500:]}")

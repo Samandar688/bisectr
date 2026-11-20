@@ -41,3 +41,12 @@ def test_main_small_run(tmp_path):
         assert r["linear_estimate_s"] > 0
     assert (out / "bench_tests.png").stat().st_size > 0
     assert (out / "bench_time.png").stat().st_size > 0
+
+
+@pytest.mark.parametrize("line", [
+    "1ea9729c1fb419548ba37958705cfeedc7188b3a is the first bad commit",  # git <= 2.50
+    "1ea9729c1fb419548ba37958705cfeedc7188b3a is the first 'bad' commit",  # newer git
+])
+def test_reads_both_git_bisect_wordings(line):
+    out = f"running check.py\n{line}\ncommit 1ea9729...\n"
+    assert bench.FIRST_BAD_RE.search(out).group(1) == "1ea9729c1fb419548ba37958705cfeedc7188b3a"
