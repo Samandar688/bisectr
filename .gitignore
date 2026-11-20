@@ -1,0 +1,7 @@
+.venv/
+__pycache__/
+*.egg-info/
+.pytest_cache/
+# generated demo repositories
+demo/
+data/

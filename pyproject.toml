@@ -1,0 +1,21 @@
+[project]
+name = "bisectr"
+version = "0.1.0"
+description = "Find the commit that broke your code with binary search over git history, and watch it happen"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["bisectr"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
